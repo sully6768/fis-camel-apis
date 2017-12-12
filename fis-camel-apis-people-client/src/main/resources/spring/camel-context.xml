@@ -9,7 +9,7 @@
 	<camelContext id="camel-demo-context" xmlns="http://camel.apache.org/schema/spring">
 
 		<route id="route-client-timer">
-			<from uri="timer:hello?period=2000" />
+			<from uri="timer:hello?period=5000" />
 			<camel:setHeader headerName="generated-value">
 				<simple>${random(1,4)}</simple>
 			</camel:setHeader>
@@ -46,13 +46,13 @@
 			<recipientList>
 				<simple>jetty:https://api-2445581707231.production.gw.apicast.io:443/people-service/user/${header.id}?user_key=7d6d6d9c870e472eff6b91361f8b866e</simple>
 			</recipientList>
-			<log id="route-log" message=">>> ${body}" />
+			<log id="route-log" message=">>> Find User Log: ${body}" />
 		</route>
         
         
 
         <route id="route-client-findall-timer">
-            <from uri="timer:findall-timer?period=1000" />
+            <from uri="timer:findall-timer?period=2500" />
             <to uri="direct:route-people-svc-findall-producer" />
         </route>
 
@@ -61,7 +61,22 @@
             <recipientList>
                 <simple>jetty:https://api-2445581707231.production.gw.apicast.io:443/people-service/user/findAll?user_key=7d6d6d9c870e472eff6b91361f8b866e</simple>
             </recipientList>
-            <log id="route-people-svc-findall-log" message=">>> ${body}" />
+            <log id="route-people-svc-findall-log" message=">>> Find All Log: ${body}" />
+        </route>
+        
+        
+
+        <route id="route-client-echo-timer">
+            <from uri="timer:route-client-echo-timer?period=2000" />
+            <to uri="direct:route-client-echo-producer" />
+        </route>
+
+        <route id="route-client-echo">
+            <from id="route-client-echo-producer" uri="direct:route-client-echo-producer" />
+            <recipientList>
+                <simple>jetty:https://api-2445581707231.production.gw.apicast.io:443/people-service/echo/ping?user_key=7d6d6d9c870e472eff6b91361f8b866e</simple>
+            </recipientList>
+            <log id="route-client-echo-log" message=">>> Echo Log: ${body}" />
         </route>
 
 	</camelContext>
