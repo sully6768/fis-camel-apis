@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+	<!-- Define a traditional camel context here -->
+	<camelContext id="camel-demo-context" xmlns="http://camel.apache.org/schema/spring">
+
+		<route id="route-client-timer">
+			<from uri="timer:hello?period=2000" />
+			<camel:setHeader headerName="generated-value">
+				<simple>${random(1,4)}</simple>
+			</camel:setHeader>
+			<choice>
+				<when>
+					<xpath>$generated-value = '1'</xpath>
+					<camel:setHeader headerName="id">
+						<camel:constant>123</camel:constant>
+					</camel:setHeader>
+				</when>
+				<when>
+					<xpath>$generated-value = '2'</xpath>
+					<camel:setHeader headerName="id">
+						<camel:constant>456</camel:constant>
+					</camel:setHeader>
+				</when>
+				<when>
+					<xpath>$generated-value = '3'</xpath>
+					<camel:setHeader headerName="id">
+						<camel:constant>789</camel:constant>
+					</camel:setHeader>
+				</when>
+				<otherwise>
+					<camel:setHeader headerName="id">
+						<camel:constant>000</camel:constant>
+					</camel:setHeader>
+				</otherwise>
+			</choice>
+			<to uri="direct:route-people-svc-producer" />
+		</route>
+
+		<route id="route-people-svc">
+			<from id="route-people-svc-producer" uri="direct:route-people-svc-producer" />
+			<recipientList>
+				<simple>jetty:https://api-2445581707231.production.gw.apicast.io:443/people-service/user/${header.id}?user_key=7d6d6d9c870e472eff6b91361f8b866e</simple>
+			</recipientList>
+			<log id="route-log" message=">>> ${body}" />
+		</route>
+        
+        
+
+        <route id="route-client-findall-timer">
+            <from uri="timer:findall-timer?period=1000" />
+            <to uri="direct:route-people-svc-findall-producer" />
+        </route>
+
+        <route id="route-people-svc-findall">
+            <from id="route-people-svc-findall-producer" uri="direct:route-people-svc-findall-producer" />
+            <recipientList>
+                <simple>jetty:https://api-2445581707231.production.gw.apicast.io:443/people-service/user/findAll?user_key=7d6d6d9c870e472eff6b91361f8b866e</simple>
+            </recipientList>
+            <log id="route-people-svc-findall-log" message=">>> ${body}" />
+        </route>
+
+	</camelContext>
+</beans>
