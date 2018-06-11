@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="              http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd              http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <!-- Define a traditional camel context here -->
+    <camelContext id="camel-demo-context" xmlns="http://camel.apache.org/schema/spring">
+        <route id="route-client-timer">
+            <from id="_from1" uri="timer:hello?period=5000"/>
+            <camel:setHeader headerName="generated-value" id="_setHeader1">
+                <simple>${random(1,5)}</simple>
+            </camel:setHeader>
+            <choice id="_choice1">
+                <when id="_when1">
+                    <xpath>$generated-value = '1'</xpath>
+                    <camel:setHeader headerName="id" id="_setHeader2">
+                        <camel:constant>123</camel:constant>
+                    </camel:setHeader>
+                </when>
+                <when id="_when2">
+                    <xpath>$generated-value = '2'</xpath>
+                    <camel:setHeader headerName="id" id="_setHeader3">
+                        <camel:constant>456</camel:constant>
+                    </camel:setHeader>
+                </when>
+                <when id="_when3">
+                    <xpath>$generated-value = '3'</xpath>
+                    <camel:setHeader headerName="id" id="_setHeader4">
+                        <camel:constant>789</camel:constant>
+                    </camel:setHeader>
+                </when>
+                <otherwise id="_otherwise1">
+                    <camel:setHeader headerName="id" id="_setHeader5">
+                        <camel:constant>000</camel:constant>
+                    </camel:setHeader>
+                </otherwise>
+            </choice>
+            <to id="_to1" uri="direct:route-people-svc-producer"/>
+        </route>
+        <route id="route-people-svc">
+            <from id="route-people-svc-producer" uri="direct:route-people-svc-producer"/>
+            <recipientList id="_recipientList1">
+                <simple>jetty:https://api-2445581707231.production.gw.apicast.io:443/people-service/user/${header.id}?user_key=7d6d6d9c870e472eff6b91361f8b866e</simple>
+            </recipientList>
+            <log id="route-log" message=">>> Find User Log: ${body}"/>
+        </route>
+        <route id="route-client-findall-timer">
+            <from id="_from2" uri="timer:findall-timer?period=2500"/>
+            <to id="_to2" uri="direct:route-people-svc-findall-producer"/>
+        </route>
+        <route id="route-people-svc-findall">
+            <from id="route-people-svc-findall-producer" uri="direct:route-people-svc-findall-producer"/>
+            <recipientList id="_recipientList2">
+                <simple>jetty:https://api-2445581707231.production.gw.apicast.io:443/people-service/user/findAll?user_key=7d6d6d9c870e472eff6b91361f8b866e</simple>
+            </recipientList>
+            <log id="route-people-svc-findall-log" message=">>> Find All Log: ${body}"/>
+        </route>
+        <route id="route-client-echo-timer">
+            <from id="_from3" uri="timer:route-client-echo-timer?period=2000"/>
+            <to id="_to3" uri="direct:route-client-echo-producer"/>
+        </route>
+        <route id="route-client-echo">
+            <from id="route-client-echo-producer" uri="direct:route-client-echo-producer"/>
+            <recipientList id="_recipientList3">
+                <simple>jetty:https://api-2445581707231.production.gw.apicast.io:443/people-service/echo/ping?user_key=7d6d6d9c870e472eff6b91361f8b866e</simple>
+            </recipientList>
+            <log id="route-client-echo-log" message=">>> Echo Log: ${body}"/>
+        </route>
+    </camelContext>
+</beans>

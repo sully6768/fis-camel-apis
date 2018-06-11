@@ -1,0 +1,18 @@
+metadata:
+  name: fis-people-api-rt
+spec:
+  host: people-api.apps.rhpds.openshift.opentlc.com
+  to:
+    kind: Service
+    name: fis-people-api-svc
+    weight: 100
+  port:
+    targetPort: http
+  wildcardPolicy: None
+status:
+  ingress:
+    - host: people-api.apps.rhpds.openshift.opentlc.com
+      conditions:
+        - type: Admitted
+          status: 'True'
+      wildcardPolicy: None

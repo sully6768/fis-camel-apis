@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
     Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with
@@ -15,18 +15,15 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<project
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.jboss.fis.camel.apis.example</groupId>
-    <artifactId>fis-camel-apis-parent</artifactId>
+    <artifactId>fis-people-api-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>JBoss :: FIS :: Camel :: APIs</name>
     <modules>
-        <module>fis-camel-apis-people-client</module>
-        <module>fis-camel-apis-people-service</module>
-    </modules>
+        <module>fis-people-api-client</module>
+        <module>fis-people-api-svc</module>
+  </modules>
 </project>

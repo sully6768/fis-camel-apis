@@ -55,3 +55,9 @@ Once the container image has been built and deployed in OpenShift, the integrati
     mvn test -Dtest=*KT
 
 The test is disabled by default and has to be enabled using `-Dtest`. Open Source Community documentation at [Integration Testing](https://fabric8.io/guide/testing.html) and [Fabric8 Arquillian Extension](https://fabric8.io/guide/arquillian.html) provide more information on writing full fledged black box integration tests for OpenShift. 
+
+
+### Included Demos
+SOAP to REST
+Create a REST Service Using database adapter
+Complex Use cases where requester is waiting for response which is getting executed Async manner.

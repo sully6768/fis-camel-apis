@@ -1,0 +1,6 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: fis-people-api-stage-configmap
+data:
+  route.log-message: Hello Galaxy!
